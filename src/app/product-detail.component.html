@@ -1,0 +1,70 @@
+<div class="col-8 product" *ngIf="product">
+    <div class="col-6 image-holder">
+        <img class="image" [src]="model?.merchandisingMedia[0]?.value">
+    </div>
+    <div class="col-6 details">
+        <div class="displayName">{{model?.displayName}}</div>
+        <div class="stars-holder">
+            <img class="stars" [style.background-position-y.px]="getSpritePosition()" src="../assets/img/blank.png">
+        </div>
+        <div class="display-description">{{model?.displayDescription}}</div>
+        <div class="subtype col-12">
+            <div class="col-6 no-padding">
+                <div class="colour-label">Colour: 
+                    <b>{{selectedColour}}</b>
+                </div>
+                <div class="flex">
+                    <div class="flex">
+                        <div *ngFor="let localModel of getColorVariations()"
+                        class="button-holder" [class.button-highlight]="localModel?.colourName === selectedColour">
+                            <!-- The background color gradiation had to be done in the tamplete, passing the localmodel
+                            to components method a returning the result produced the same color for all buttons.
+                        
+                            If you change the values in phones.json from hex to rgb, i can use rgba insted of the first 'white'
+                            color and make it look even better -->
+                            <button 
+                            [style.background]="'linear-gradient(white, ' + localModel.colourHex + ', ' + localModel.colourHex + ')'"
+                            (click)="selectColor(localModel.colourName)">
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 no-padding">
+                <div class="colour-label">Capacity: 
+                    <b>{{selectedMemory}}</b>
+                </div>
+                <div class="flex">
+                    <div class="flex no-padding">
+                        <div *ngFor="let localModel of getMemoryVariations()"
+                        class="button-holder" [class.button-highlight]="localModel?.memory === selectedMemory">
+                            <!-- There is no reason to include "GB" in the "64GB" string in phones.json, its a bad design and it should be
+                            removed. It is much easier to add "GB" to show the capacity (line 34) than to write a method which will split the
+                            string a remove "GB" -->
+                            <button 
+                            [style.backgroundColor]="'rgb(244, 244, 244)'"
+                            (click)="selectMemory(localModel.memory)">
+                            {{getMemoryNumber(localModel?.memory)}}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- In phones.json there are two properties, "bundlePrice" and "hardwarePrice", i don't know what are the conditions for showing these prices.
+        For example when there are prices for both, which one should i show? Also some of those prices seem to be incorrect for an iPhone.
+
+        In phones.json, what does "oneOffPrice" means? I think it means the total price of the phone if you pay the whole sum a once but some of
+        the values are "149", "275", etc., iPhone doesn't cost that little so i'm not sure if thats a typo or something else  -->
+        <div class="price-options col-12 no-padding flex">
+            <div class="col-6 option">
+                from <div class="price">&nbsp;£ {{getPrice(model.priceInfo?.hardwarePrice?.oneOffDiscountPrice?.gross)}}&nbsp;</div> upfront cost
+            </div>
+            <div class="col-6 option">
+                <div>
+                    When you pay <span class="price">&nbsp;£ {{getPrice(model.priceInfo?.bundlePrice?.monthlyPrice?.gross)}}&nbsp;</span> a month
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
